@@ -306,8 +306,8 @@ export default {
               selectedClass
             );
             for (const path of result.paths) {
-              path.on("mousedown", function () {
-                d3.event.stopPropagation();
+              path.on("mousedown", function (event) {
+                event.stopPropagation();
                 if (that.pathClickedOnce) {
                   that.editConnection(conn);
                 } else {
@@ -429,19 +429,19 @@ export default {
             that.clickedOnce = true;
           }
         })
-        .on("drag", async function () {
+        .on("drag", async function (event) {
           if (that.readonly) {
             return;
           }
 
           let zoom = parseFloat(document.getElementById("svg").style.zoom || 1);
           for (let currentNode of that.currentNodes) {
-            let x = d3.event.dx / zoom;
+            let x = event.dx / zoom;
             if (currentNode.x + x < 0) {
               x = -currentNode.x;
             }
             currentNode.x += x;
-            let y = d3.event.dy / zoom;
+            let y = event.dy / zoom;
             if (currentNode.y + y < 0) {
               y = -currentNode.y;
             }
@@ -504,9 +504,9 @@ export default {
           }
         });
       g.call(drag);
-      g.on("mousedown", function () {
+      g.on("mousedown", function (event) {
         // handle ctrl+mousedown
-        if (!d3.event.ctrlKey) {
+        if (!event.ctrlKey) {
           return;
         }
         let isNotCurrentNode =
@@ -529,16 +529,16 @@ export default {
           .attr("r", 4)
           .attr("class", "connector");
         connector
-          .on("mousedown", function () {
-            d3.event.stopPropagation();
+          .on("mousedown", function (event) {
+            event.stopPropagation();
             if (node.type === "end" || that.readonly) {
               return;
             }
             that.connectingInfo.source = node;
             that.connectingInfo.sourcePosition = position;
           })
-          .on("mouseup", function () {
-            d3.event.stopPropagation();
+          .on("mouseup", function (event) {
+            event.stopPropagation();
             if (that.connectingInfo.source) {
               if (that.connectingInfo.source.id !== node.id) {
                 // Node can't connect to itself
